@@ -1,5 +1,18 @@
-# FO4 Makefile
+SHELL := bash
+SRCS    := $(wildcard *.c)
+CC       := gcc
+BIN      := fo4
+CFLAGS   := -Wall -Og
 
-fo4: main.c fo4.c util.c
-	gcc -o fo4 main.c fo4.c util.c
+all: $(BIN)
 
+release: CFLAGS=-Wall -O3 -DNDEBUG
+release: clean
+release: $(BIN)
+
+$(BIN): $(SRCS)
+	$(CC) $(CFLAGS) $^ -o $@
+
+
+clean:
+	rm -f $(BIN)
