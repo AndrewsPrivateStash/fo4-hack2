@@ -37,7 +37,7 @@
 
 
 
-int main(int argc, char **argv) {
+int main(void) {
 
 
     struct words *possible_words = NULL;
@@ -45,47 +45,52 @@ int main(int argc, char **argv) {
     cls();
 
     while (1) {
-    
+
         choice = menu();
 
         switch (choice) {
             case -1:    //quit
                 return 0;
-            case 1:     //enter all possibilites
+            case 1: {     //enter all possibilites
                 if (possible_words != NULL) free_words(possible_words);
                 puts("enter all possible words, seperated by commas");
-            
+
                 char input[BUFFER_SIZE];
-                fgets(input, BUFFER_SIZE, stdin);
+                if (!fgets(input, BUFFER_SIZE, stdin)) {
+                    fprintf(stderr, "couldn't read from stdin\n");
+                    continue;
+                };
                 input[strcspn(input, "\n")] = '\0';     //remove trailing \n
 
                 possible_words = parse_input_words(input);
                 print_words(possible_words);
                 break;
+            }
 
-            case 2:     //enter a guess and return the remaining possibilities
-                char guess[BUFFER_SIZE];
+            case 2: {     //enter a guess and return the remaining possibilities
+                char guess[BUFFER_SIZE] = {0};
                 int match_val = 0;
-                
+
                 int res = 0;
                 while (res != 1) {
                     printf("enter the guessed word: ");
                     res = scanf("%s", guess);
                     while (getchar() != '\n');
                 }
-                
+
                 res = 0;
                 while (res != 1) {
                     printf("enter the match val #: ");
                     res = scanf("%d", &match_val);
                     while (getchar() != '\n');
                 }
-                
+
                 add_guess(guess, (unsigned short) match_val, possible_words);
                 update_possibilites(possible_words);
                 print_possible(possible_words);
 
                 break;
+            }
 
             case 3:     //see remaining possibilites
                 print_possible(possible_words);
@@ -100,11 +105,11 @@ int main(int argc, char **argv) {
                 break;
 
         }
-        
+
     }
 
     free_words(possible_words);
-    
+
     return 0;
 
 }

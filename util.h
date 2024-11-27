@@ -3,7 +3,7 @@
 #define UTIL_H_
 
 char *trim(char *str);
-void cls();
+void cls(void);
 void to_upper_str(char*);
 
 

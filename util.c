@@ -25,7 +25,7 @@ char *trim(char *str)
 }
 
 //clear screen
-void cls() {
+void cls(void) {
     printf("\e[1;1H\e[2J"); // only for unix
 }
 

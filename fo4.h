@@ -47,7 +47,7 @@ void print_words(struct words*);
 
 
 // ####### IO functions #######
-int menu();
+int menu(void);
 
 
 #endif

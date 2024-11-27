@@ -1,6 +1,7 @@
 
 #include "fo4.h"
 #include "util.h"
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +13,7 @@ short int match(const struct word *wref, const struct word *wcomp) {
     short ref_len = strlen(wref->chars);
 
     // check that both strings are same length, if not return -1
-    if (ref_len != strlen(wcomp->chars)){
+    if ((size_t)ref_len != strlen(wcomp->chars)){
         return -1;
     }
 
@@ -54,11 +55,11 @@ void free_word(struct word* to_free) {
 
 // load a words struct from raw unparced comma seperated string
 struct words* parse_input_words(const char *input) {
-    
+
     // copy string for parsing
     char *in_str = malloc(sizeof(char)*(strlen(input)+1));
     in_str = strcpy(in_str, input);
-    
+
     // make the words container
     struct words *out_words = malloc(sizeof(struct words));
     out_words->cnt = 0;
@@ -70,7 +71,7 @@ struct words* parse_input_words(const char *input) {
 
     // loop over string splitting on commas
     while(tok != NULL) {
-        
+
         tok = trim(tok);    // trim tok
         to_upper_str(tok);  // upper case
 
@@ -97,13 +98,13 @@ struct words* parse_input_words(const char *input) {
 void print_words(struct words* words) {
     printf("\nYour %d Words:\n", words->cnt);
     for (int i = 0; i < words->cnt -1; i++) {
-        printf("%s (m%d,p%d), ", words->words[i]->chars, words->words[i]->match_val,words->words[i]->possible);    
+        printf("%s (m%d,p%d), ", words->words[i]->chars, words->words[i]->match_val,words->words[i]->possible);
     }
     printf("%s (m%d,p%d)\n\n",
         words->words[words->cnt -1]->chars,
         words->words[words->cnt -1]->match_val,
         words->words[words->cnt -1]->possible
-    ); 
+    );
 }
 
 
@@ -119,19 +120,19 @@ void add_guess(char *guess, unsigned short match_val, struct words *words) {
             words->words[i]->possible = false;  // a guess cannot be correct
         }
     }
-    
+
 }
 
 
 // loop over the words and compare the match value of
 // possible words against the guessed values; setting possibility accordingly
-void update_possibilites(struct words *words) {   
+void update_possibilites(struct words *words) {
     for (int i = 0; i < words->cnt; i++) {
         if (words->words[i]->possible) {    // look for eligible words
             for ( int j = 0; j < words->cnt; j++) {
                 if ( strcmp(words->words[i]->chars, words->words[j]->chars) != 0
                         && words->words[j]->match_val > 0) { // not the same word and a guess
-                    
+
                     if ( match(words->words[i], words->words[j]) != words->words[j]->match_val ) {
                         // possibility doesn't match guess so can be removed
                         words->words[i]->possible = false;
@@ -152,7 +153,7 @@ void print_possible(struct words *words) {
     for (int i = 0; i < words->cnt; i++) {
         if (words->words[i]->possible) {
             pw_cnt++;
-            printf("%s\n", words->words[i]->chars);  
+            printf("%s\n", words->words[i]->chars);
         }
     }
     printf("%d possible words remaining\n\n", pw_cnt);
@@ -173,7 +174,7 @@ void free_words(struct words *words) {
 
 // print the menu to the screen
 // and grab user selection from stdin
-int menu() {
+int menu(void) {
     //cls();
     int input = -1;
 
@@ -192,7 +193,7 @@ int menu() {
             puts("please enter a number between 1..4, or -1 to quit.\n\n");
             continue;
         }
-        break;   
+        break;
     }
 
     return input;
